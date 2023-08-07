@@ -1,0 +1,37 @@
+{
+  "name": "tolper",
+  "version": "0.2.0",
+  "description": "Tool that's automatize some tasks in Github Projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec node_modules/.bin/babel-node src/server/main.js",
+    "openai": "nodemon --exec node_modules/.bin/babel-node src/openai/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitucordeiro/tolper.git"
+  },
+  "keywords": [
+    "tool"
+  ],
+  "author": "Victor Cordeiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vitucordeiro/tolper/issues"
+  },
+  "homepage": "https://github.com/vitucordeiro/tolper#readme",
+  "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@babel/node": "^7.22.6",
+    "@babel/preset-env": "^7.22.9",
+    "nodemon": "^3.0.1",
+    "smee-client": "1.2.3"
+  },
+  "dependencies": {
+    "@octokit/webhooks": "12.0.3",
+    "dotenv": "16.3.1",
+    "octokit": "^3.1.0",
+    "openai": "3.3.0"
+  }
+}
