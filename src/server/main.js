@@ -6,10 +6,8 @@ import fs from "fs";
 import http from "http";
 import { prompt } from "../openai";
 
-// This reads your `.env` file and adds the variables from that file to the `process.env` object in Node.js.
 dotenv.config();
 
-// This assigns the values of your environment variables to local variables.
 const appId = process.env.APP_ID;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 const privateKeyPath = process.env.PRIVATE_KEY_PATH;
