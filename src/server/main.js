@@ -13,8 +13,8 @@ const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
 const path = "/api/webhook";
 const localWebhookUrl = `http://${host}:${port}${path}`;
 
-const regrets_issue = ``
-const regrets_pr = ``
+const rule_issue = ``
+const rule_pr = ``
 
 // This assigns the values of your environment variables to local variables.
 const appId = process.env.APP_ID;
@@ -39,7 +39,7 @@ async function handlerPostRegretsPR({octokit, payload}){
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
       issue_number: payload.issue.number,
-      body: regrets_pr,
+      body: rule_pr,
       headers: {
         "x-github-api-version": "2022-11-28",
       },
@@ -57,7 +57,7 @@ async function handlerPostRegretsIssue({octokit, payload}){
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
       issue_number: payload.issue.number,
-      body: regrets_issue,
+      body: rule_issue,
       headers: {
         "x-github-api-version": "2022-11-28",
       },
