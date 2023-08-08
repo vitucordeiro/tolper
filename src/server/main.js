@@ -8,6 +8,8 @@ import { prompt } from "../openai";
 
 // This reads your `.env` file and adds the variables from that file to the `process.env` object in Node.js.
 dotenv.config();
+const regrets_issue = ``
+const regrets_pr = ``
 
 // This assigns the values of your environment variables to local variables.
 const appId = process.env.APP_ID;
@@ -16,9 +18,7 @@ const privateKeyPath = process.env.PRIVATE_KEY_PATH;
 
 const privateKey = fs.readFileSync(privateKeyPath, "utf8");
 
-var promptText = (text) => {
-  return  toString(prompt(text))
-}
+
 const app = new App({
   appId: appId,
   privateKey: privateKey,
@@ -27,15 +27,14 @@ const app = new App({
   },
 });
 
-async function handlePullRequestOpenedComment({octokit, payload}) {
-  console.log(`Received a pull request event for #${payload.pull_request.name}`);
 
+async function handlerPostRegretsPR({octokit, payload}){
   try {
     await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
-      issue_number: payload.pull_request.number,
-      body: messageForNewPRs,
+      issue_number: payload.issue.number,
+      body: regrets_pr,
       headers: {
         "x-github-api-version": "2022-11-28",
       },
@@ -46,40 +45,14 @@ async function handlePullRequestOpenedComment({octokit, payload}) {
     }
     console.error(error)
   }
-};
-async function getCommentsFromData(listComment){
-  const text = listComment.data.map(array =>{
-    return array["body"]
-  })
-  return promptText(text)
-} 
-async function handleGetListCommentFromIssue({octokit, payload}){
-  const issue = payload.issue.number
-  try{
-    const listComment = await octokit.request("GET /repos/{owner}/{repo}/issues/{issue_number}/comments",
-    {owner: payload.repository.owner.login,
-    repo: payload.repository.name,
-    issue_number: issue,
-    headers: {'X-GitHub-Api-Version': '2022-11-28'} })
-
-    getCommentsFromData(listComment )
-
-  }catch(error){
-    if(error.response)[
-      console.error(`Error from response! Status: ${error.response.status}. Message: ${error.response.data.message}`)
-    ]
-    console.log(error)
-  } 
 }
-async function handlePostResumeFromIssue({octokit, payload}){
-  console.log("chegou aqui no post")
-  const issue = payload.issue.number
+async function handlerPostRegretsIssue({octokit, payload}){
   try {
     await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
       owner: payload.repository.owner.login,
       repo: payload.repository.name,
-      issue_number: issue,
-      body: `${promptText} `,
+      issue_number: payload.issue.number,
+      body: regrets_issue,
       headers: {
         "x-github-api-version": "2022-11-28",
       },
@@ -91,32 +64,11 @@ async function handlePostResumeFromIssue({octokit, payload}){
     console.error(error)
   }
 }
-async function handleGetCommentFromIssue({octokit, payload}){
-  try {
-    const result = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      comment_id: payload.comment.id,
-      headers: {
-        "x-github-api-version": "2022-11-28",
-      },
-    });
-    return result.data.body == "!resume" ? handleGetListCommentFromIssue({octokit,payload}): false;
 
 
-  } catch (error) {
-    if (error.response) {
-      console.error(`Error! Status: ${error.response.status}. Message: ${error.response.data.message}`)
-    }
-    console.error(error)
-  }
-}
-async function service ({octokit,payload}){
-  handleGetCommentFromIssue({octokit,payload})
-    .then(response => handlePostResumeFromIssue({octokit,payload}))
-}
+app.webhooks.on("issue_comment.created", handlerPostRegretsIssue)
+app.webhooks.on("pull_request.opened", handlerPostRegretsIssue)
 
-app.webhooks.on("issue_comment", service)
 
 app.webhooks.onError((error) => {
   if (error.name === "AggregateError") {
