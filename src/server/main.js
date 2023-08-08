@@ -6,8 +6,13 @@ import fs from "fs";
 import http from "http";
 import { prompt } from "../openai";
 
-// This reads your `.env` file and adds the variables from that file to the `process.env` object in Node.js.
 dotenv.config();
+
+const port = process.env.PORT || 3000;
+const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+const path = "/api/webhook";
+const localWebhookUrl = `http://${host}:${port}${path}`;
+
 const regrets_issue = ``
 const regrets_pr = ``
 
@@ -77,13 +82,6 @@ app.webhooks.onError((error) => {
     console.error(error);
   }
 });
-
-//
-const port = 3000;
-const host = 'localhost';
-const path = "/api/webhook";
-const localWebhookUrl = `http://${host}:${port}${path}`;
-
 
 const middleware = createNodeMiddleware(app.webhooks, {path});
 
