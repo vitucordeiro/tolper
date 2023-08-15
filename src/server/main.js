@@ -70,7 +70,6 @@ async function handleGetListCommentFromIssue({octokit, payload}){
   } 
 }
 async function handlePostResumeFromIssue({octokit, payload}){
-  console.log("chegou aqui no post")
   const issue = payload.issue.number
   try {
     await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
