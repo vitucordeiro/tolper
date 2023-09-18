@@ -8,6 +8,8 @@ import { prompt } from "../openai";
 
 dotenv.config();
 
+const messageForNewPRs: string = ""
+
 const appId = process.env.APP_ID;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 const privateKeyPath = process.env.PRIVATE_KEY_PATH;
